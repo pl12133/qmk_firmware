@@ -3,3 +3,5 @@
 
 #pragma once
 #define RGB_MATRIX_LED_COUNT 70
+
+#define TAPPING_TOGGLE 3
