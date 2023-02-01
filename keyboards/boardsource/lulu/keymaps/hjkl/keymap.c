@@ -1,5 +1,6 @@
 // Copyright 2022 Cole Smith <cole@boadsource.xyz>
 // SPDX-License-Identifier: GPL-2.0-or-later
+#include "vimmode.h"
 
 #include QMK_KEYBOARD_H
 
@@ -7,7 +8,8 @@ enum layers {
     _QWERTY,
     _RAISE,
     _LOWER,
-    _ADJUST
+    _ADJUST,
+    _VIM
 };
 
 #define RAISE TT(_RAISE)
@@ -73,23 +75,12 @@ qk_tap_dance_action_t tap_dance_actions[] = {
 };
 
 
-enum CUSTOM_KEYCODES {
-    VIM_DD = SAFE_RANGE,
-};
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-    switch (keycode) {
-    case VIM_DD:
-        if (record->event.pressed) {
-            // when keycode is pressed
-            register_code(KC_LGUI);
-            tap_code(KC_RGHT);
-            tap_code(KC_BSPC);
-            unregister_code(KC_LGUI);
-        }
-        break;
-    }
-    return true;
+  bool vim_handled = handle_vim_mode(keycode, record, _VIM);
+  if (vim_handled)
+    return false;
+
+  return true;
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -143,7 +134,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |RWord | Ins  |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |      |DeLine|      |      |-------.    ,-------| Left | Down |  Up  |Right |  XXX |  XXX |
+ * |      |      |      |      |      |      |-------.    ,-------| Left | Down |  Up  |Right |  XXX |  XXX |
  * |------+------+------+------+------+------|   (   |    |   )   |------+------+------+------+------+------|
  * |      |      |      |      |      |LWord |-------|    |-------|   +  |   -  |   =  |   >  |   \  |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -153,9 +144,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_RAISE] = LAYOUT(
-  _______, _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, _______,
+  VIM_ESC, _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, _______,
   _______, _______, _______, VIM_E,   KC_INS,  _______,                    _______, _______, _______, _______, _______, _______,
-  _______, _______, _______, VIM_DD, _______, _______,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
+  _______, _______, _______, _______, _______, _______,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
   _______, SPC_LFT, SPC_RGH, _______, _______, VIM_B,    KC_LPRN, KC_RPRN, KC_PLUS, KC_MINS, KC_EQL,  KC_RABK, KC_BSLS, _______,
                              _______, _______, _______,  _______, _______, _______, _______, KC_DEL
 ),
@@ -173,13 +164,35 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   |      |      |      |/       /         \      \ |      |      |      |
  *                   `----------------------------'           '------''--------------------'
  */
-  [_ADJUST] = LAYOUT(
+[_ADJUST] = LAYOUT(
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
                              _______, _______, _______, _______, _______,  _______, _______, _______
-  )
+),
+/* VIM
+ * Layer handled entirely by process_record_user function implemented in vimmode.c
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |                    |      |      |      |      |      |      |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------.    ,-------|      |      |      |      |      |      |
+ * |------+------+------+------+------+------|       |    |       |------+------+------+------+------+------|
+ * |      |      |      |      |      |      |-------|    |-------|      |      |      |      |      |      |
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *                   |      |      |      | /       /       \      \  |      |      |      |
+ *                   |      |      |      |/       /         \      \ |      |      |      |
+ *                   `----------------------------'           '------''--------------------'
+ */
+[_VIM] = LAYOUT(
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, _______, _______, _______,                   _______, _______, _______, _______, _______, _______,
+  KC_LSFT, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, _______, KC_RSFT,
+                             _______, _______, _______, _______, _______,  _______, _______, _______
+)
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
