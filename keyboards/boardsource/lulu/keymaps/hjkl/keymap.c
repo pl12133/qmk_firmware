@@ -13,20 +13,85 @@ enum layers {
 #define RAISE TT(_RAISE)
 #define LOWER MO(_LOWER)
 
+// Easy Vim-like movement
+#define VIM_E LALT(KC_RGHT)   // e, end of word
+#define VIM_B LALT(KC_LEFT)   // b, back word
+#define VIM_BOL LGUI(KC_LEFT) // 0, jump to beginning of line
+#define VIM_EOL LGUI(KC_RGHT) // $, jump to end of line
+
+// Spectacle keybindings
+#define SPC_RGH LCTL(LALT(LGUI(KC_RGHT)))
+#define SPC_LFT LCTL(LALT(LGUI(KC_LEFT)))
+// Caps Lock on Double Shift
+#define TD_LSFT TD(_TD_LSFT)
+#define TD_F1 TD(_TD_F1)
+#define TD_F2 TD(_TD_F2)
+#define TD_F3 TD(_TD_F3)
+#define TD_F4 TD(_TD_F4)
+#define TD_F5 TD(_TD_F5)
+#define TD_F6 TD(_TD_F6)
+#define TD_F7 TD(_TD_F7)
+#define TD_F8 TD(_TD_F8)
+#define TD_F9 TD(_TD_F9)
+#define TD_F10 TD(_TD_F10)
+#define TD_F11 TD(_TD_F11)
+#define TD_F12 TD(_TD_F12)
+
+// Tap Dance action codes
 enum {
     _TD_LSFT,
+    _TD_F1,
+    _TD_F2,
+    _TD_F3,
+    _TD_F4,
+    _TD_F5,
+    _TD_F6,
+    _TD_F7,
+    _TD_F8,
+    _TD_F9,
+    _TD_F10,
+    _TD_F11,
+    _TD_F12,
 };
 
 // Tap Dance definitions
 qk_tap_dance_action_t tap_dance_actions[] = {
     // Tap once for Escape, twice for Caps Lock
     [_TD_LSFT] = ACTION_TAP_DANCE_DOUBLE(KC_LSFT, KC_CAPS),
+    [_TD_F1] = ACTION_TAP_DANCE_DOUBLE(KC_BRID, KC_F1),
+    [_TD_F2] = ACTION_TAP_DANCE_DOUBLE(KC_BRIU, KC_F2),
+    [_TD_F3] = ACTION_TAP_DANCE_DOUBLE(_______, KC_F3),
+    [_TD_F4] = ACTION_TAP_DANCE_DOUBLE(_______, KC_F4),
+    [_TD_F5] = ACTION_TAP_DANCE_DOUBLE(BL_DEC, KC_F5),
+    [_TD_F6] = ACTION_TAP_DANCE_DOUBLE(BL_INC, KC_F6),
+    [_TD_F7] = ACTION_TAP_DANCE_DOUBLE(KC_MPRV, KC_F7),
+    [_TD_F8] = ACTION_TAP_DANCE_DOUBLE(KC_MPLY, KC_F8),
+    [_TD_F9] = ACTION_TAP_DANCE_DOUBLE(KC_MNXT, KC_F9),
+    [_TD_F10] = ACTION_TAP_DANCE_DOUBLE(KC_MUTE, KC_F10),
+    [_TD_F11] = ACTION_TAP_DANCE_DOUBLE(KC_VOLD, KC_F11),
+    [_TD_F12] = ACTION_TAP_DANCE_DOUBLE(KC_VOLU, KC_F12),
 };
 
-#define VIM_W LALT(KC_RGHT)
-#define VIM_B LALT(KC_LEFT)
-// Caps Lock on Double Shift
-#define TD_LSFT TD(_TD_LSFT)
+
+enum CUSTOM_KEYCODES {
+    VIM_DD = SAFE_RANGE,
+};
+
+bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+    switch (keycode) {
+    case VIM_DD:
+        if (record->event.pressed) {
+            // when keycode is pressed
+            register_code(KC_LGUI);
+            tap_code(KC_RGHT);
+            tap_code(KC_BSPC);
+            unregister_code(KC_LGUI);
+        }
+        break;
+    }
+    return true;
+};
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* QWERTY
@@ -66,7 +131,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *                   `----------------------------'           '------''--------------------'
  */
 [_LOWER] = LAYOUT(
-  KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,                      KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
+  TD_F1,   TD_F2,   TD_F3,   TD_F4,   TD_F5,   TD_F6,                     TD_F7,   TD_F8,   TD_F9,   TD_F10,  TD_F11,  TD_F12,
   KC_GRV,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,                      KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    _______,
   KC_TILD, KC_EXLM, KC_AT,   KC_HASH, KC_DLR,  KC_PERC,                   KC_CIRC, KC_AMPR, KC_ASTR, KC_LPRN, KC_RPRN, _______,
   _______, _______, _______, _______, _______, _______, KC_LPRN, KC_RPRN, KC_PLUS, KC_LBRC, KC_RBRC, KC_LCBR, KC_RCBR, KC_PIPE,
@@ -74,11 +139,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 /* RAISE
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |MacF1 |MacF2 |      |      |MacF5 |MacF6 |                    |MacF7 |MacF8 |MacF9 |MacF10|MacF11|MacF12|
+ * |      |      |      |      | EOL  |      |                    |      |      |      |      |  BOL |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |RWord | Ins  |      |      |                    |      |      |      |      |      |      |
+ * |      |      |      |RWord | Ins  |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
- * |      |      |      |      |      |      |-------.    ,-------| Left | Down |  Up  |Right |  XXX |  XXX |
+ * |      |      |      |DeLine|      |      |-------.    ,-------| Left | Down |  Up  |Right |  XXX |  XXX |
  * |------+------+------+------+------+------|   (   |    |   )   |------+------+------+------+------+------|
  * |      |      |      |      |      |LWord |-------|    |-------|   +  |   -  |   =  |   >  |   \  |      |
  * `-----------------------------------------/       /     \      \-----------------------------------------'
@@ -88,10 +153,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_RAISE] = LAYOUT(
-  KC_BRID, KC_BRIU, _______, _______, BL_DEC, BL_INC,                     KC_MPRV, KC_MPLY, KC_MNXT, KC_MUTE, KC_VOLD, KC_VOLU,
-  _______, VIM_W,   KC_INS,  _______, _______, _______,                    _______, _______, _______, _______, _______, _______,
-  _______, _______, _______, _______, _______, _______,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
-  _______, _______, _______, _______, _______, VIM_B,    KC_LPRN, KC_RPRN, KC_PLUS, KC_MINS, KC_EQL,  KC_RABK, KC_BSLS, _______,
+  _______, _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, _______,
+  _______, _______, _______, VIM_E,   KC_INS,  _______,                    _______, _______, _______, _______, _______, _______,
+  _______, _______, _______, VIM_DD, _______, _______,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
+  _______, SPC_LFT, SPC_RGH, _______, _______, VIM_B,    KC_LPRN, KC_RPRN, KC_PLUS, KC_MINS, KC_EQL,  KC_RABK, KC_BSLS, _______,
                              _______, _______, _______,  _______, _______, _______, _______, KC_DEL
 ),
 /* ADJUST
