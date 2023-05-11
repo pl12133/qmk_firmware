@@ -28,14 +28,7 @@
 
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes {
-  VIM_ESC = SAFE_RANGE,
-  SWE_AA,
-  SWE_AE,
-  SWE_OE,
-  ALT_AA,
-  HAPPY,
-  SAD,
-  TONGUE
+  VIM_ESC = SAFE_RANGE
 };
 
 bool handle_vim_mode(uint16_t keycode, keyrecord_t *record, uint8_t vim_layer_no);

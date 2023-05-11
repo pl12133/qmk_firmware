@@ -59,7 +59,7 @@ void go_insert_mode(void) {
   currsavesize = 0;
   currmode = INSERT_SAVE_MODE;
   visual_mode = false;
-  layer_off(vim_layer);
+  layer_clear();
 }
 
 void add_to_vim_cmd(char c) {
