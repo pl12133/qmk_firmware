@@ -9,11 +9,13 @@ enum layers {
     _RAISE,
     _LOWER,
     _ADJUST,
-    _VIM
+    _VIM,
+    _WORKMAN
 };
 
 #define RAISE MO(_RAISE)
 #define LOWER LT(_LOWER, KC_ESC)
+#define WKMAN TG(_WORKMAN)
 
 // Easy Vim-like movement
 #define VIM_E LALT(KC_RGHT)   // e, end of word
@@ -126,7 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 /* RAISE
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * |      |      |      |      | EOL  |      |                    |      |      |      |      |  BOL |      |
+ * | WKMAN|      |      |      | EOL  |      |                    |      |      |      |      |  BOL |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |RWord | Ins  |      |                    |      |      |      |      |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -140,7 +142,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_RAISE] = LAYOUT(
-  _______, _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, _______,
+  WKMAN,   _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, _______,
   _______, _______, _______, VIM_E,   KC_INS,  _______,                    _______, _______, _______, _______, _______, _______,
   _______, _______, _______, _______, _______, _______,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
   _______, SPC_LFT, SPC_RGH, _______, _______, VIM_B,    KC_LPRN, KC_RPRN, KC_PLUS, KC_MINS, KC_EQL,  KC_RABK, KC_BSLS, _______,
@@ -186,9 +188,31 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_ESC,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_GRV,
   KC_TAB,   KC_Q,   KC_W,    KC_E,    KC_R,    KC_T,                     KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_MINS,
   KC_LCTL,  KC_A,   KC_S,    KC_D,    KC_F,    KC_G,                     KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC,  KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH,  KC_RSFT,
+  KC_LSFT,  KC_Z,   KC_X,    KC_C,    KC_V,    KC_B, KC_LBRC,  KC_RBRC,  KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
                           KC_LALT,    KC_LGUI, LOWER, KC_SPC,  KC_ENT,   RAISE,   KC_BSPC, KC_RGUI
-)
+),
+
+/* Workman
+ * ,-----------------------------------------.                    ,-----------------------------------------.
+ * | `    |   1  |   2  |   3  |   4  |   5  |                    |   6  |   7  |   8  |   9  |   0  |  `   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * | Tab  |   Q  |   D  |   R  |   W  |   B  |                    |   J  |   F  |   U  |   P  |   ;  |  -   |
+ * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
+ * |LCTRL |   A  |   S  |   H  |   T  |   G  |-------.    ,-------|   Y  |   N  |   E  |   O  |   I  |  '   |
+ * |------+------+------+------+------+------|   [   |    |    ]  |------+------+------+------+------+------|
+ * |LShift|   Z  |   X  |   M  |   C  |   V  |-------|    |-------|   K  |   L  |   ,  |   .  |   /  |RShift|
+ * `-----------------------------------------/       /     \      \-----------------------------------------'
+ *                   | LAlt | LGUI |LOWER | /Space  /       \Enter \  |WKMAN |BackSP| RGUI |
+ *                   |      |      |ESC   |/       /         \      \ |      |      |      |
+ *                   `----------------------------'           '------''--------------------'
+ */
+ [_WORKMAN] = LAYOUT(
+  KC_GRV,   KC_1,   KC_2,    KC_3,    KC_4,    KC_5,                     KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_EQL,
+  KC_TAB,   KC_Q,   KC_D,    KC_R,    KC_W,    KC_B,                     KC_J,    KC_F,    KC_U,    KC_P,    KC_SCLN, KC_MINS,
+  KC_LCTL,  KC_A,   KC_S,    KC_H,    KC_T,    KC_G,                     KC_Y,    KC_N,    KC_E,    KC_O,    KC_I,    KC_QUOT,
+  KC_LSFT,  KC_Z,   KC_X,    KC_M,    KC_C,    KC_V, KC_LBRC,  KC_RBRC,  KC_K,    KC_L,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
+                          KC_LALT,    KC_LGUI, LOWER, KC_SPC,  KC_ENT,   WKMAN,   KC_BSPC, KC_RGUI
+),
 };
 
 layer_state_t layer_state_set_user(layer_state_t state) {
