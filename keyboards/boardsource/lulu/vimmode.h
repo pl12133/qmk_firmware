@@ -23,9 +23,6 @@
 #define R_GUI_HELD (get_mods() & (MOD_BIT(KC_RGUI)))
 #define GUI_HELD (L_GUI_HELD || R_GUI_HELD)
 
-#undef TAPPING_TERM
-#define TAPPING_TERM 250
-
 // Defines the keycodes used by our macros in process_record_user
 enum custom_keycodes {
   VIM_ESC = SAFE_RANGE

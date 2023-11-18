@@ -40,6 +40,9 @@ enum layers {
 #define TD_F11 TD(_TD_F11)
 #define TD_F12 TD(_TD_F12)
 
+// Mod-tap space / shift (unused - i didnt like it much)
+#define MT_SPC LSFT_T(KC_SPC)
+
 // Tap Dance action codes
 enum {
     _TD_F1,
