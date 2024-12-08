@@ -131,7 +131,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 /* RAISE
  * ,-----------------------------------------.                    ,-----------------------------------------.
- * | WKMAN|      |      |      | EOL  |      |                    |      |      |      |      |  BOL |      |
+ * | WKMAN|      |      |      | EOL  |      |                    |      |      |      |      |  BOL |CTxGUI|
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
  * |      |      |      |RWord | Ins  |      |                    | Home | PgUp | PgDn | End  |      |      |
  * |------+------+------+------+------+------|                    |------+------+------+------+------+------|
@@ -145,7 +145,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 
 [_RAISE] = LAYOUT(
-  WKMAN,   _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, _______,
+  WKMAN,   _______, _______, _______, VIM_EOL, _______,                    _______, _______, _______, _______, VIM_BOL, CG_TOGG,
   _______, _______, _______, VIM_E,   KC_INS,  _______,                    KC_HOME, KC_PGUP, KC_PGDN, KC_END,  _______, _______,
   _______, _______, _______, _______, _______, _______,                    KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, XXXXXXX, XXXXXXX,
   _______, SPC_LFT, SPC_RGH, _______, _______, VIM_B,    KC_LPRN, KC_RPRN, KC_PLUS, KC_MINS, KC_EQL,  KC_RABK, KC_BSLS, _______,

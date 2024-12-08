@@ -2,3 +2,5 @@ SRC = vimmode.c # Add VIM Mode from https://github.com/Zindar/qmk_firmware/tree/
 
 # Enable Tap Dance
 TAP_DANCE_ENABLE = yes
+
+BOOTMAGIC_ENABLE = yes
